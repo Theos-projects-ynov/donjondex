@@ -4,11 +4,11 @@ services:
     container_name: pokemon_postgres
     restart: always
     environment:
-      POSTGRES_USER: pokemaster
-      POSTGRES_PASSWORD: pokepass
-      POSTGRES_DB: clickerpokemon
+      POSTGRES_USER: ${POSTGRES_USER:-pokemaster}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pokepass}
+      POSTGRES_DB: ${POSTGRES_DB:-clickerpokemon}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -17,10 +17,10 @@ services:
     container_name: pokemon_pgadmin
     restart: always
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@poke.com
-      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@poke.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin123}
     ports:
-      - "5050:80"
+      - "${PGADMIN_PORT:-5050}:80"
     depends_on:
       - postgres
 
@@ -31,13 +31,15 @@ services:
     container_name: pokemon_backend
     restart: always
     ports:
-      - "4000:4000"
-      - "4001:4001"
+      - "${BACKEND_PORT:-4000}:4000"
+      - "${WS_PORT:-4001}:4001"
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=${NODE_ENV:-production}
       - PORT=4000
       - WS_PORT=4001
-      - DATABASE_URL=postgresql://pokemaster:pokepass@postgres:5432/clickerpokemon
+      - DATABASE_URL=${DATABASE_URL:-postgresql://pokemaster:pokepass@postgres:5432/clickerpokemon}
+      - JWT_SECRET=${JWT_SECRET:-your-super-secret-jwt-key-change-this-in-production}
+      - BCRYPT_ROUNDS=${BCRYPT_ROUNDS:-12}
     depends_on:
       - postgres
     volumes:
@@ -51,11 +53,11 @@ services:
     container_name: pokemon_frontend
     restart: always
     ports:
-      - "3000:3000"
+      - "${FRONTEND_PORT:-3000}:3000"
     environment:
-      - NODE_ENV=development
-      - VITE_API_URL=http://localhost:4000
-      - VITE_WS_URL=ws://localhost:4001
+      - NODE_ENV=${NODE_ENV:-production}
+      - VITE_API_URL=${VITE_API_URL:-http://localhost:4000}
+      - VITE_WS_URL=${VITE_WS_URL:-ws://localhost:4001}
     depends_on:
       - backend
     volumes:
