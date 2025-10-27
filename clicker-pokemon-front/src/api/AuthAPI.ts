@@ -3,7 +3,7 @@ import type { Trainer, LoginRequest, RegisterRequest, AuthResponse } from "../ty
 
 // Base query avec gestion de l'authentification
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:4000/api",
+  baseUrl: `${import.meta.env.VITE_API_URL}/api`,
   prepareHeaders: (headers) => {
     // Récupérer le token depuis le localStorage
     const token = localStorage.getItem('authToken');

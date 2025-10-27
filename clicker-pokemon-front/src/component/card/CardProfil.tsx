@@ -61,11 +61,14 @@ function CardProfil() {
 
     const fetchTrainer = async () => {
       try {
-        const response = await fetch(`http://localhost:4000/api/trainer/me`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/trainer/me`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
         const data = await response.json();
         console.log("data : ", data);
         setTrainer(data);

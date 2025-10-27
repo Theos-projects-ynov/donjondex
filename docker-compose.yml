@@ -8,7 +8,8 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pokepass}
       POSTGRES_DB: ${POSTGRES_DB:-clickerpokemon}
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - "${POSTGRES_PORT:-3301}:3301"
+    command: ["postgres", "-p", "3301"]
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -66,3 +67,16 @@ services:
 
 volumes:
   postgres_data:
+
+# Watchtower pour auto-update des conteneurs
+watchtower:
+  image: containrrr/watchtower
+  container_name: watchtower
+  restart: always
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+  environment:
+    - WATCHTOWER_CLEANUP=true
+    - WATCHTOWER_POLL_INTERVAL=3600
+    - WATCHTOWER_INCLUDE_STOPPED=true
+  command: --interval 3600 pokemon_backend pokemon_frontend pokemon_postgres pokemon_pgadmin

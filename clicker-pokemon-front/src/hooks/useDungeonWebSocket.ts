@@ -1,23 +1,23 @@
 import { useEffect, useRef, useCallback, useReducer, useState } from 'react';
 import type {
-    DungeonState,
-    AttackResult,
-    PokemonKO,
-    EnemyDefeated,
-    ForcePokemonSwitch,
-    DungeonCompletion,
-    AvailablePokemon,
-    CurrentHp,
-    MaxHp,
-    Enemy
+  DungeonState,
+  AttackResult,
+  PokemonKO,
+  EnemyDefeated,
+  ForcePokemonSwitch,
+  DungeonCompletion,
+  AvailablePokemon,
+  CurrentHp,
+  MaxHp,
+  Enemy
 } from '../types/Dungeon';
 import type { OwnedPokemon } from '../types/Trainer';
 import { DungeonMessageType, DUNGEON_MESSAGES } from '../constants/dungeonConstants';
 import {
-    GameAction,
-    gameStateReducer,
-    initialGameState,
-    type UnifiedGameState
+  GameAction,
+  gameStateReducer,
+  initialGameState,
+  type UnifiedGameState
 } from '../types/gameState';
 import { replacePokemonNamesInMessage } from '../utils/pokemonUtils';
 import { AuthService } from '../service/authService';
@@ -340,7 +340,7 @@ export const useDungeonWebSocket = ({
     try {
       dispatch({ type: GameAction.SET_LOADING });
       
-      const websocket = new WebSocket('ws://localhost:4001/dungeon');
+      const websocket = new WebSocket(`${import.meta.env.VITE_WS_URL}/dungeon`);
       wsRef.current = websocket;
 
       websocket.onopen = () => {

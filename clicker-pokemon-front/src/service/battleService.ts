@@ -29,8 +29,8 @@ class BattleService {
         this.ws.close();
       }
 
-      console.log('Tentative de connexion WebSocket à ws://localhost:4001/battle');
-      this.ws = new WebSocket('ws://localhost:4001/battle');
+      console.log(`Tentative de connexion WebSocket à ${import.meta.env.VITE_WS_URL}/battle`);
+      this.ws = new WebSocket(`${import.meta.env.VITE_WS_URL}/battle`);
       
       this.ws.onopen = () => {
         console.log('✅ Connexion WebSocket établie');

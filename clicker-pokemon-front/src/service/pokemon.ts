@@ -3,7 +3,7 @@ import type { Pokemon } from './api';
 
 // Configuration axios pour l'API du backend
 const api = axios.create({
-  baseURL: 'http://localhost:4000/api',
+  baseURL: `${import.meta.env.VITE_API_URL}/api`,
   headers: {
     'Content-Type': 'application/json',
   },
