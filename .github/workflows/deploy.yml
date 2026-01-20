@@ -1,0 +1,61 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  DEPLOY_PATH: /volume2/docker/donjondex/donjondex
+
+jobs:
+  deploy:
+    name: Deploy to NAS
+    runs-on: [self-hosted, nas, donjondex]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy locally on NAS
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "=========================================="
+          echo "Donjondex - Deployment"
+          echo "=========================================="
+          echo "Date: $(date)"
+          echo ""
+
+          # Configure git
+          git config --global --add safe.directory ${{ env.DEPLOY_PATH }}
+          git config --global url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+
+          # Navigate to project directory
+          cd ${{ env.DEPLOY_PATH }}
+
+          # Pull latest changes
+          echo "Pulling latest changes from GitHub..."
+          git fetch origin
+          git checkout main
+          git pull origin main
+          echo ""
+
+          # Build and restart containers
+          echo "Building and restarting containers..."
+          docker compose build
+          docker compose up -d --force-recreate
+          echo ""
+
+          # Health check
+          echo "Waiting for services to start..."
+          sleep 15
+
+          echo ""
+          echo "=========================================="
+          echo "Deployment Completed!"
+          echo "=========================================="
+          echo ""
+          echo "Running containers:"
+          docker ps --filter "name=pokemon" --format "table {{.Names}}\t{{.Status}}"
